@@ -96,3 +96,42 @@ RSpec.describe "Register", type: :request do
     end
   end
 end
+
+RSpec.describe "Login", type: :request do
+  describe "POST /login" do
+    let(:email) { "realuser@test.com" }
+
+    before do
+      FactoryBot.create(:user, { email: email })
+    end
+    context "failed login" do
+      it "login fails if email adress not found" do
+        post "/login", params: {
+          email: "wrongemail@test.com",
+          password: "secret"
+        }
+        expect(response).to have_http_status(:unauthorized)
+        expect(JSON.parse(response.body)).to eq("error" => "Incorrect email or password")
+      end
+
+      it "login fails if password not correct" do
+        post "/login", params: {
+          email: "realuser@test.com",
+          password: "wrongpassword"
+        }
+        expect(response).to have_http_status(:unauthorized)
+        expect(JSON.parse(response.body)).to eq({ "error" => "Incorrect email or password" })
+      end
+    end
+
+    context "successful login" do
+      it "registers a user when no validation errors" do
+        post "/login", params: {
+          email: "realuser@test.com",
+          password: "secret"
+        }
+        expect(JSON.parse(response.body)).to eq({ "session" => { "jwt" => "dummy token" } })
+      end
+    end
+  end
+end
