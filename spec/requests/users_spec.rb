@@ -89,9 +89,12 @@ RSpec.describe "Register", type: :request do
             }
           }
         end.to change { User.count }.by(1)
-
+        
         expect(response).to have_http_status(:success)
-        expect(JSON.parse(response.body)).to eq({ "session" => { "jwt" => "dummy token" } })
+        expect(JSON.parse(response.body)).to eq({ "session" => JWT.encode({ 
+          email: "jane.doe@test.com",
+          exp: 24.hours.from_now.to_i
+        }, Rails.application.secrets.secret_key_base.to_s) })
       end
     end
   end
@@ -130,7 +133,10 @@ RSpec.describe "Login", type: :request do
           email: "realuser@test.com",
           password: "secret"
         }
-        expect(JSON.parse(response.body)).to eq({ "session" => { "jwt" => "dummy token" } })
+        expect(JSON.parse(response.body)).to eq({ "session" => JWT.encode({ 
+          email: "realuser@test.com",
+          exp: 24.hours.from_now.to_i
+        }, Rails.application.secrets.secret_key_base.to_s) })
       end
     end
   end
