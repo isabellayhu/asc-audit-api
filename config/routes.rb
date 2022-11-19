@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :audit_templates
   post "/register", to: "users#create"
   post "/login", to: "users#login"
   # Routing logic: fallback requests for React Router.

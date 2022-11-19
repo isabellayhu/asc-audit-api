@@ -1,0 +1,2 @@
+class AuditTemplatesController < ApplicationController
+end
