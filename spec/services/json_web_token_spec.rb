@@ -4,11 +4,12 @@ describe "JsonWebToken" do
   describe ".encode" do
     it "encodes a JWT with correct expiry" do
         expiry = 24.hours.from_now
-        payload = { email: "john.doe@test.com", name: "John Doe" }
+        payload = { email: "john.doe@test.com", name: "John Doe", id: 1 }
 
         expected_result = JWT.encode({ 
           email: "john.doe@test.com",
           name: "John Doe",
+          id: 1,
           exp: expiry.to_i
         }, Rails.application.secrets.secret_key_base.to_s)
 

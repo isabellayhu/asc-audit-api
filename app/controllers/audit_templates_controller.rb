@@ -1,6 +1,6 @@
 class AuditTemplatesController < ApplicationController
   def create
-    @audit_template = AuditTemplate.new(audit_template_params)
+    @audit_template = current_user.audit_templates.new(audit_template_params)
     if @audit_template.save
       render json: @audit_template
     else
