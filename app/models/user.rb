@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   has_secure_password
 
@@ -6,6 +8,5 @@ class User < ApplicationRecord
   validates :last_name, presence: true
 
   has_many :audit_templates
-  
   accepts_nested_attributes_for :audit_templates
 end

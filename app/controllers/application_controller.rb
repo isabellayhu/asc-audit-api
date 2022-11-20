@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   include ActionController::Cookies
   include ActionController::HttpAuthentication::Token::ControllerMethods
@@ -14,6 +16,6 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
-    head :unauthorized unless @current_user.present? 
+    head :unauthorized if @current_user.blank?
   end
 end
