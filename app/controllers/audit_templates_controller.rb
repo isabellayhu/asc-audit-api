@@ -43,6 +43,11 @@ class AuditTemplatesController < ApplicationController
         title
         description
         photo_url
+        question_options_attributes: %i[
+          position
+          description
+          grade
+        ]
       ]
     )
   end

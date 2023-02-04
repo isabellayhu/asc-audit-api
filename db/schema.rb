@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_20_061255) do
+ActiveRecord::Schema.define(version: 2022_12_10_225455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(version: 2022_11_20_061255) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_audit_templates_on_user_id"
+  end
+
+  create_table "question_options", force: :cascade do |t|
+    t.integer "position", null: false
+    t.string "description", null: false
+    t.boolean "grade", null: false
+    t.bigint "question_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["position", "question_id"], name: "index_question_options_on_position_and_question_id", unique: true
+    t.index ["question_id"], name: "index_question_options_on_question_id"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -45,5 +56,6 @@ ActiveRecord::Schema.define(version: 2022_11_20_061255) do
   end
 
   add_foreign_key "audit_templates", "users"
+  add_foreign_key "question_options", "questions"
   add_foreign_key "questions", "audit_templates"
 end
