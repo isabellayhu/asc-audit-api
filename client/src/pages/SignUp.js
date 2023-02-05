@@ -29,13 +29,36 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  let [loading, setLoading] = React.useState(false)
+  let [response, setResponse] = React.useState()
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    setLoading(true)
+
+    const user = new FormData(event.currentTarget);
+    const body = JSON.stringify({
+      user: {
+        first_name: user.get('firstName'),
+        last_name: user.get('lastName'),
+        email: user.get('email'),
+        password: user.get('password'),
+      }
+    })
+    const resp = await fetch('/register',{
+      method: "POST",
+      headers: {'Content-Type':'application/json'},
+      body
+    })
+
+    const responseBody = await resp.json()
+
+    // if (response.ok) {
+    //   localStorage['token'] = responseBody.session
+    // }
+    setResponse(responseBody)
+    setLoading(false)
   };
 
   return (
@@ -57,9 +80,13 @@ export default function SignUp() {
             Sign up
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <p>
+              {response && JSON.stringify(response)}
+            </p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  disabled={loading}
                   autoComplete="given-name"
                   name="firstName"
                   required
@@ -71,6 +98,7 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  disabled={loading}
                   required
                   fullWidth
                   id="lastName"
@@ -82,6 +110,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   required
+                  disabled={loading}
                   fullWidth
                   id="email"
                   label="Email Address"
@@ -92,11 +121,24 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   required
+                  disabled={loading}
                   fullWidth
                   name="password"
                   label="Password"
                   type="password"
                   id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  disabled={loading}
+                  fullWidth
+                  name="passwordConfirmation"
+                  label="Conform Password"
+                  type="password"
+                  id="passwordConfirmation"
                   autoComplete="new-password"
                 />
               </Grid>
@@ -109,6 +151,7 @@ export default function SignUp() {
             </Grid>
             <Button
               type="submit"
+              disabled={loading}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
