@@ -5,5 +5,5 @@ import {
 } from "react-router-dom";
 
 export default function AppRouter() {
-  return useRoutes([LoginRoutes, MainRoutes]);
+  return useRoutes([MainRoutes,LoginRoutes]);
 }
