@@ -13,19 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-// function Copyright(props) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
 const theme = createTheme();
 
 export default function SignUp() {
@@ -44,6 +31,7 @@ export default function SignUp() {
         last_name: user.get('lastName'),
         email: user.get('email'),
         password: user.get('password'),
+        password_confirmation: user.get('passwordConfirmation'),
       }
     })
     const resp = await fetch('/register',{
@@ -54,9 +42,10 @@ export default function SignUp() {
 
     const responseBody = await resp.json()
 
-    // if (response.ok) {
-    //   localStorage['token'] = responseBody.session
-    // }
+    if (resp.ok) {
+      localStorage['token'] = responseBody.session
+    }
+
     setResponse(responseBody)
     setLoading(false)
   };
@@ -109,8 +98,8 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
                   disabled={loading}
+                  required
                   fullWidth
                   id="email"
                   label="Email Address"
@@ -127,7 +116,7 @@ export default function SignUp() {
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
+                  // autoComplete="new-password"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -139,7 +128,7 @@ export default function SignUp() {
                   label="Conform Password"
                   type="password"
                   id="passwordConfirmation"
-                  autoComplete="new-password"
+                  // autoComplete="new-password"
                 />
               </Grid>
               {/* <Grid item xs={12}>

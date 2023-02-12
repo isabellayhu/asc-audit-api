@@ -13,9 +13,9 @@ class UsersController < ActionController::API
   end
 
   def login
-    @user = User.find_by(email: params[:email])
+    @user = User.find_by(email: login_params[:email])
 
-    if @user&.authenticate(params[:password])
+    if @user&.authenticate(login_params[:password])
       render json: { session: JsonWebToken.encode({ email: @user.email, id: @user.id }) }
     else
       render json: { error: 'Incorrect email or password' }, status: :unauthorized
@@ -23,6 +23,11 @@ class UsersController < ActionController::API
   end
 
   private
+
+  def login_params
+    params.require(:user)
+    .permit(:email, :password)
+  end
 
   def register_params
     params.require(:user)

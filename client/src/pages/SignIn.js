@@ -13,29 +13,39 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-// function Copyright(props) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  let [loading, setLoading] = React.useState(false)
+  let [response, setResponse] = React.useState()
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    setLoading(true)
+
+    const user = new FormData(event.currentTarget);
+    const body = JSON.stringify({
+      user: {
+        email: user.get('email'),
+        password: user.get('password'),
+      }
+    })
+
+    const resp = await fetch('/login',{
+      method: "POST",
+      headers: {'Content-Type':'application/json'},
+      body
+    })
+
+    const responseBody = await resp.json()
+
+    if (resp.ok) {
+      localStorage['token'] = responseBody.session
+    }
+
+    setResponse(responseBody)
+    setLoading(false)
   };
 
   return (
@@ -57,7 +67,11 @@ export default function SignIn() {
             Sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <p>
+              {response && JSON.stringify(response)}
+            </p>
             <TextField
+              disabled={loading}
               margin="normal"
               required
               fullWidth
@@ -68,6 +82,7 @@ export default function SignIn() {
               autoFocus
             />
             <TextField
+              disabled={loading}
               margin="normal"
               required
               fullWidth
@@ -75,7 +90,7 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              // autoComplete="current-password"
             />
             {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -83,6 +98,7 @@ export default function SignIn() {
             /> */}
             <Button
               type="submit"
+              disabled={loading}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
@@ -97,7 +113,7 @@ export default function SignIn() {
               </Grid> */}
               <Grid item>
                 <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  Don't have an account? Sign Up"
                 </Link>
               </Grid>
             </Grid>
